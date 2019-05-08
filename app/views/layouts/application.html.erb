@@ -10,6 +10,7 @@
 
   <body>
   <header>
+    <%= render shared/errors %>
     <% if current_user %>
       <%= current_user.username %>
     <% end %>
@@ -23,6 +24,8 @@
       <button><a href="<%= new_session_url %>">Login</a></button>
     <% end %>
   </header>
+
+
     <%= yield %>
   </body>
 </html>

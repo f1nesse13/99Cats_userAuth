@@ -9,4 +9,10 @@ class ApplicationController < ActionController::Base
     user = User.find_by_credentials(params[:user][:username], params[:user][:password])
     self.session[:session_token] = user.reset_session_token!
   end
+
+  def already_logged_in
+    if current_user
+      redirect_to cats_url
+    end
+  end
 end
