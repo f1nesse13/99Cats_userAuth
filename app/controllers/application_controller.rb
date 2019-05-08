@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
   def login_user!(credentials)
     user = User.find_by_credentials(params[:user][:username], params[:user][:password])
+    return nil if user.nil?
     self.session[:session_token] = user.reset_session_token!
   end
 

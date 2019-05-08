@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :already_logged_in
+  before_action :already_logged_in, except: [:destroy]
 
   def new
     @user = User.new
@@ -10,7 +10,6 @@ class SessionsController < ApplicationController
     if login_user!(user_params)
       redirect_to cats_url
     else
-      flash[:errors] = "Username or password does not match"
       render :new
     end
   end
