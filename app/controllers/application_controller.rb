@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  helper_method :current_user, :login_user!
+  helper_method :current_user, :login_user!, :can_approve?
 
   def current_user
     current_user ||= User.find_by(session_token: self.session[:session_token])
@@ -13,6 +13,23 @@ class ApplicationController < ActionController::Base
 
   def already_logged_in
     if current_user
+      redirect_to cats_url
+    end
+  end
+
+  def logged_in?
+    if current_user.nil?
+      redirect_to new_session_url
+    end
+  end
+
+  def can_approve?
+    CatRentalRequest.find(params[:id]).cat.owner == current_user
+  end
+
+  def cat_owned?
+    if current_user.cats.where({ id: params[:id] }).empty?
+      flash[:errors] = "You must be the owner to do that!"
       redirect_to cats_url
     end
   end

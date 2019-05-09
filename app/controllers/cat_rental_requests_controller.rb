@@ -1,4 +1,7 @@
 class CatRentalRequestsController < ApplicationController
+  before_action :logged_in?
+  before_action :cat_owned?, only: [:deny, :approve]
+
   def approve
     current_cat_rental_request.approve!
     redirect_to cat_url(current_cat)
