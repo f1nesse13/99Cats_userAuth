@@ -9,43 +9,47 @@ class CatRentalRequest < ApplicationRecord
 
   belongs_to :cat
 
+  belongs_to :requester,
+    foreign_key: :user_id,
+    class_name: "User"
+
   after_initialize :assign_pending_status
 
   def approve!
-    raise 'not pending' unless self.status == 'PENDING'
+    raise "not pending" unless self.status == "PENDING"
     transaction do
-      self.status = 'APPROVED'
+      self.status = "APPROVED"
       self.save!
 
       # when we approve this request, we reject all other overlapping
       # requests for this cat.
       overlapping_pending_requests.each do |req|
-        req.update!(status: 'DENIED')
+        req.update!(status: "DENIED")
       end
     end
   end
 
   def approved?
-    self.status == 'APPROVED'
+    self.status == "APPROVED"
   end
 
   def denied?
-    self.status == 'DENIED'
+    self.status == "DENIED"
   end
 
   def deny!
-    self.status = 'DENIED'
+    self.status = "DENIED"
     self.save!
   end
 
   def pending?
-    self.status == 'PENDING'
+    self.status == "PENDING"
   end
 
   private
 
   def assign_pending_status
-    self.status ||= 'PENDING'
+    self.status ||= "PENDING"
   end
 
   def overlapping_requests
@@ -122,7 +126,7 @@ class CatRentalRequest < ApplicationRecord
     CatRentalRequest
       .where.not(id: self.id)
       .where(cat_id: cat_id)
-      .where.not('start_date > :end_date OR end_date < :start_date',
+      .where.not("start_date > :end_date OR end_date < :start_date",
                  start_date: start_date, end_date: end_date)
   end
 
@@ -142,13 +146,13 @@ class CatRentalRequest < ApplicationRecord
 
     unless overlapping_approved_requests.empty?
       errors[:base] <<
-        'Request conflicts with existing approved request'
+        "Request conflicts with existing approved request"
     end
   end
 
   def start_must_come_before_end
     return if start_date < end_date
-    errors[:start_date] << 'must come before end date'
-    errors[:end_date] << 'must come after start date'
+    errors[:start_date] << "must come before end date"
+    errors[:end_date] << "must come after start date"
   end
 end

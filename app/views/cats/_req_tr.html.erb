@@ -4,6 +4,9 @@
   <td>
     <%= req.status %>
   </td>
+  <td>
+    <%= req.requester.username %>
+  </td>
   <% if req.pending? && can_approve? %>
     <td>
       <form action="<%= approve_cat_rental_request_url(req) %>" method="post">

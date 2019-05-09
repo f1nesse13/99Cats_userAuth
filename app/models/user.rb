@@ -12,6 +12,10 @@ class User < ApplicationRecord
     foreign_key: :user_id,
     class_name: "Cat"
 
+  has_many :requests,
+    foreign_key: :user_id,
+    class_name: "CatRentalRequest"
+
   def self.find_by_credentials(username, password)
     user = User.find_by(username: username)
 
